@@ -1,0 +1,53 @@
+(function() {
+    var links = document.querySelectorAll("a");
+    var legendStyles = `
+        position: fixed;
+        top: 10px;
+        right: 10px;
+        padding: 10px;
+        background-color: white;
+        border: 1px solid #ccc;
+        z-index: 9999;
+    `;
+    
+    var legend = document.createElement("div");
+    legend.style.cssText = legendStyles;
+    legend.innerHTML = `
+        <h2>Leyenda de enlaces</h2>
+        <div style="color: red;">Enlace interno</div>
+        <div style="color: green;">Enlace externo</div>
+        <div style="color: blue;">Rel: Sponsored</div>
+        <div style="color: yellow;">Rel: Nofollow</div>
+        <div style="color: purple;">Rel: UGC</div>
+    `;
+    
+    document.body.appendChild(legend);
+
+    links.forEach(function(link) {
+        var isInternal = link.href.startsWith(window.location.origin);
+        var rel = link.getAttribute("rel") || "follow";
+        var borderColor, backgroundColor;
+
+        switch (rel) {
+            case "sponsored":
+                borderColor = "blue";
+                backgroundColor = "rgba(0, 0, 255, 0.1)";
+                break;
+            case "nofollow":
+                borderColor = "yellow";
+                backgroundColor = "rgba(255, 255, 0, 0.1)";
+                break;
+            case "ugc":
+                borderColor = "purple";
+                backgroundColor = "rgba(128, 0, 128, 0.1)";
+                break;
+            default:
+                borderColor = isInternal ? "red" : "green";
+                backgroundColor = isInternal ? "rgba(255, 0, 0, 0.1)" : "rgba(0, 255, 0, 0.1)";
+        }
+
+        link.style.border = `2px solid ${borderColor}`;
+        link.style.backgroundColor = backgroundColor;
+        link.title = `Rel: ${rel}`;
+    });
+})();
